@@ -7,7 +7,14 @@
          path: "{{ item.name }}"
      with_items:
       - "{{ files }}"
-     register: xyz
+     register: data
 
    - debug:
-        var: xyz
+        msg: "Checksum Passed {{ item.stat.path}}"
+     when: item.item.checksum == item.stat.checksum + ' ' + item.stat.path
+     loop: "{{ data.results }}"
+
+   - debug:
+        msg: "Checksum Failed {{ item.stat.path}}"
+     when: item.item.checksum != item.stat.checksum + ' ' + item.stat.path
+     loop: "{{ data.results }}"
